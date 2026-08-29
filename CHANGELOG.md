@@ -4,6 +4,32 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，并且本项目遵循 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/)。
 
+## [1.0.3] - 2026-08-30
+
+### 新增功能 (Added)
+- 🛡️ **访问控制（群/用户黑白名单）**：参照标准访问控制模型，新增 `[access]` 配置段，支持按群号（`group_id`）与用户 QQ 号（`user_id`）独立配置 `off`、`whitelist`、`blacklist` 访问控制模式。
+- 私聊自动豁免群维度检查，用户名单在群聊与私聊中均生效。
+- 未授权消息自动隐形放行给宿主 AI 或其他插件处理，不干扰正常对话。
+
+## [1.0.2] - 2026-08-30
+
+### 改进 (Changed)
+- 规范命令命名空间，仅保留标准 `/wordle`（及短缩写 `/w`、`/guess`）命令体系，移除多余非标准别名避免污染普通聊天与命令空间。
+- 锁定单词长度为标准 5 字母，移除 `word_length` 可配置项，避免因配置非 5 字母导致的词库越界与逻辑异常。
+- 完善 `allow_direct_guess` 开关支持与多层级配置兼容性。
+
+### 修复 (Fixed)
+- 修正 `_manifest.json` capabilities 声明，移除不存在的 `send_message` 及未使用的 `send.forward`，保留 `send.text`、`send.image`、`render.html2png`。
+
+## [1.0.1] - 2026-08-30
+
+### 改进 (Changed)
+- 配置页面中文化
+
+### 修复 (Fixed)
+- 修复关闭后仍会拦截
+- 移除误拦截的全局命令正则
+
 ## [1.0.0] - 2026-08-30
 
 ### 新增功能 (Added)

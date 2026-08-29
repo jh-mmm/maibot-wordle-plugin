@@ -1,31 +1,52 @@
 [plugin]
+# 配置文件版本号
 config_version = "1.0.0"
 
+# 是否启用 Wordle 猜单词插件（默认开启）
+enabled = true
+
 [game]
-# 最大猜测次数（默认 6）
+# 每局最大允许猜测次数（默认 6 次）
 max_attempts = 6
 
-# 单词长度（默认 5 字母）
-word_length = 5
-
-# 是否要求猜测必须是有效英文单词（默认开启）
+# 是否要求猜测必须是词库中的有效英文单词（默认开启，关闭则允许任意 5 字母组合）
 enforce_dictionary = true
 
-# 是否允许获取游戏提示（默认开启）
+# 是否允许玩家在游戏中通过 /wordle hint 获取字母提示（默认开启）
 allow_hints = true
 
-# 每局最多允许获取提示次数（默认 2 次）
+# 单局游戏中最多允许获取提示的次数（默认 2 次）
 max_hints_per_game = 2
 
-# 未操作超时自动结算时间（分钟，默认 15 分钟）
-session_timeout_minutes = 15
-
-# 有进行中游戏时，直接发送 5 字母单词是否自动识别为猜测（默认开启）
+# 当聊天流存在进行中游戏时，直接发送 5 字母单词是否自动作为猜测处理（默认开启）
 allow_direct_guess = true
 
+# 未操作超时自动结算与清理时间（单位：分钟，默认 15 分钟）
+session_timeout_minutes = 15
+
 [display]
-# 是否优先使用 HTML 转图片卡片展示（默认开启，失败时自动降级为 Emoji 文本棋盘）
+# 是否优先使用 HTML2PNG 图片卡片展示棋盘与战绩（默认开启，失败时自动降级为 Emoji 文本棋盘）
 use_image_render = true
 
-# 游戏结束时是否显示单词中文释义与音标（默认开启）
+# 游戏结束时是否在结果中展示单词的中文释义与国际音标（默认开启）
 show_definition = true
+
+[access]
+# 群名单模式：off=不限制 | whitelist=仅名单内群 | blacklist=名单内群不启用（私聊不受群名单影响）
+group_mode = "off"
+
+# 群白名单（群号列表，group_mode="whitelist" 时生效；留空表示所有群都不启用）
+group_whitelist = []
+
+# 群黑名单（群号列表，group_mode="blacklist" 时生效）
+group_blacklist = []
+
+# 用户名单模式：off=不限制 | whitelist=仅名单内用户 | blacklist=名单内用户不启用（群聊与私聊均生效）
+user_mode = "off"
+
+# 用户白名单（QQ 号列表，user_mode="whitelist" 时生效；留空表示所有人都不启用）
+user_whitelist = []
+
+# 用户黑名单（QQ 号列表，user_mode="blacklist" 时生效）
+user_blacklist = []
+

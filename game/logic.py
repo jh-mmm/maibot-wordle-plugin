@@ -81,6 +81,9 @@ def evaluate_guess(target_word: str, guess_word: str) -> list[str]:
     return result
 
 
+WORD_LENGTH = 5
+
+
 class WordleGame:
     """Wordle single game session instance."""
 
@@ -88,7 +91,7 @@ class WordleGame:
         self,
         target_word: str,
         max_attempts: int = 6,
-        word_length: int = 5,
+        word_length: int = WORD_LENGTH,
         stream_id: str = "",
         creator_id: str = "",
         creator_name: str = "",
@@ -97,7 +100,7 @@ class WordleGame:
     ) -> None:
         self.target_word: str = target_word.strip().upper()
         self.max_attempts: int = max_attempts
-        self.word_length: int = word_length
+        self.word_length: int = WORD_LENGTH
         self.stream_id: str = stream_id
         self.creator_id: str = creator_id
         self.creator_name: str = creator_name

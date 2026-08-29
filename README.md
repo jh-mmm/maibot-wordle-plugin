@@ -43,15 +43,15 @@
 
 ## ⌨️ 常用命令
 
-| 命令 / 输入 | 别名 | 说明 |
+| 命令 / 输入 | 缩写 / 示例 | 说明 |
 | :--- | :--- | :--- |
-| `wordle` | `/wordle`, `猜单词`, `/猜单词` | 发起一局新游戏 / 查看当前棋盘 |
-| 直接发送 5 字母单词 | `CLASH`, `first`, `/w apple` | 进行 5 字母猜测 |
-| `提示` | `/wordle hint`, `hint` | 获取线索提示（首字母或词义线索） |
-| `投降` | `/wordle stop`, `结束`, `stop` | 认输并揭晓正确单词与详细释义 |
-| `重开` | `/wordle restart`, `restart` | 放弃当前局并重新开启一局新游戏 |
-| `战绩` | `/wordle stat`, `stat`, `统计` | 查看个人胜率、连胜记录与步数分布图 |
-| `帮助` | `/wordle help`, `help` | 查看玩法规则与指令说明 |
+| `/wordle` | `/w`, `/guess` | 发起一局新游戏 / 查看当前棋盘 |
+| 直接发送 5 字母单词 | `CLASH`, `first`, `/wordle apple` | 进行 5 字母猜测（需开启 `allow_direct_guess`） |
+| `/wordle hint` | `/w hint` | 获取线索提示（首字母或词义线索） |
+| `/wordle stop` | `/w stop` | 认输并揭晓正确单词与详细释义 |
+| `/wordle restart` | `/w restart` | 放弃当前局并重新开启一局新游戏 |
+| `/wordle stats` | `/wordle stat`, `/w stats` | 查看个人胜率、连胜记录与步数分布图 |
+| `/wordle help` | `/w help` | 查看玩法规则与指令说明 |
 
 ---
 
@@ -66,9 +66,6 @@ config_version = "1.0.0"
 [game]
 # 最大猜测次数（默认 6）
 max_attempts = 6
-
-# 单词长度（默认 5 字母）
-word_length = 5
 
 # 是否要求猜测必须是有效英文单词（默认开启）
 enforce_dictionary = true
@@ -91,6 +88,49 @@ use_image_render = true
 
 # 游戏结束时是否显示单词中文释义与音标（默认开启）
 show_definition = true
+
+[access]
+group_mode = "off"          # off=不限制 | whitelist=仅名单内群 | blacklist=名单内群不启用
+group_whitelist = ["123456789"]
+group_blacklist = []
+user_mode = "off"           # off=不限制 | whitelist=仅名单内用户 | blacklist=名单内用户不启用
+user_whitelist = []
+user_blacklist = ["10001"]
+```
+
+---
+
+## 🛡️ 访问控制：群 / 用户黑白名单
+
+在 `[access]` 段可以按**群号**和**用户 QQ 号**两个维度限制哪些消息或群聊可以使用 Wordle 插件。
+
+```toml
+[access]
+group_mode = "off"          # off=不限制 | whitelist=仅名单内群 | blacklist=名单内群不启用
+group_whitelist = ["123456789"]
+group_blacklist = []
+user_mode = "off"           # off=不限制 | whitelist=仅名单内用户 | blacklist=名单内用户不启用
+user_whitelist = []
+user_blacklist = ["10001"]
+```
+
+### 规则说明
+
+- **两个维度是「与」关系**：群维度和用户维度都通过，才允许发起或参与 Wordle 游戏。
+- **同一维度同一时刻只有一份名单生效**：由该维度的 `mode` 决定；`mode = "off"` 时忽略两份名单。
+- **`whitelist` 模式下名单为空 = 全部拒绝**。如需放行所有人/群请将 `mode` 设为 `"off"`，避免留空白名单。
+- **私聊不受群名单影响**：私聊消息没有群号，群维度自动跳过；用户名单在群聊和私聊中均生效。
+- **非侵入式放行**：被名单拦截的消息会正常交给麦麦 AI 或其他插件处理，Wordle 插件完全隐形不打扰。
+- **号码格式**：名单里的号码建议写成**字符串**（如 `["123456789"]`）。
+
+#### 配置示例：仅在指定群开启并拉黑个别用户
+
+```toml
+[access]
+group_mode = "whitelist"
+group_whitelist = ["123456789", "987654321"]
+user_mode = "blacklist"
+user_blacklist = ["10001"]
 ```
 
 ---
