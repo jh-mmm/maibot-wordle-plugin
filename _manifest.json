@@ -3,7 +3,7 @@
   "id": "jh-mmm.maibot-wordle-plugin",
   "name": "Wordle 猜单词",
   "version": "1.0.3",
-  "description": "经典的 5 字母 Wordle 猜单词游戏插件，支持精美卡片渲染、虚拟键盘状态高亮、单词释义与战绩统计。",
+  "description": "经典的 5 字母 Wordle 猜单词游戏插件，支持精美卡片渲染、单词释义与战绩统计。",
   "author": {
     "name": "jh-mmm",
     "url": "https://github.com/jh-mmm"
