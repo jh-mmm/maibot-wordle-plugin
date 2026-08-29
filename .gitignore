@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# MaiBot runtime generated files
+/config.toml
+data/storage/
+temp_test_data/
+*.log
+
+# Testing & IDE
+.pytest_cache/
+.coverage
+htmlcov/
+.vscode/
+.idea/

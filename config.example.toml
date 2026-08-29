@@ -1,0 +1,31 @@
+[plugin]
+config_version = "1.0.0"
+
+[game]
+# 最大猜测次数（默认 6）
+max_attempts = 6
+
+# 单词长度（默认 5 字母）
+word_length = 5
+
+# 是否要求猜测必须是有效英文单词（默认开启）
+enforce_dictionary = true
+
+# 是否允许获取游戏提示（默认开启）
+allow_hints = true
+
+# 每局最多允许获取提示次数（默认 2 次）
+max_hints_per_game = 2
+
+# 未操作超时自动结算时间（分钟，默认 15 分钟）
+session_timeout_minutes = 15
+
+# 有进行中游戏时，直接发送 5 字母单词是否自动识别为猜测（默认开启）
+allow_direct_guess = true
+
+[display]
+# 是否优先使用 HTML 转图片卡片展示（默认开启，失败时自动降级为 Emoji 文本棋盘）
+use_image_render = true
+
+# 游戏结束时是否显示单词中文释义与音标（默认开启）
+show_definition = true

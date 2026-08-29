@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Modernist Flat Background Squircle -->
+  <rect width="512" height="512" rx="112" fill="#181F2C" />
+
+  <!-- Inner Flat Content Grid (2 Rows x 3 Cols: W O R / D L E) -->
+  <g transform="translate(77, 138)">
+    <!-- Row 1, Col 1: W (Green) -->
+    <rect x="0" y="0" width="114" height="114" rx="8" fill="#16A34A" />
+    <text x="57" y="81" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF" text-anchor="middle">W</text>
+
+    <!-- Row 1, Col 2: O (Yellow) -->
+    <rect x="122" y="0" width="114" height="114" rx="8" fill="#EAB308" />
+    <text x="179" y="81" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF" text-anchor="middle">O</text>
+
+    <!-- Row 1, Col 3: R (Slate / Absent) -->
+    <rect x="244" y="0" width="114" height="114" rx="8" fill="#334155" />
+    <text x="301" y="81" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF" text-anchor="middle">R</text>
+
+    <!-- Row 2, Col 1: D (Green) -->
+    <rect x="0" y="122" width="114" height="114" rx="8" fill="#16A34A" />
+    <text x="57" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF" text-anchor="middle">D</text>
+
+    <!-- Row 2, Col 2: L (Green) -->
+    <rect x="122" y="122" width="114" height="114" rx="8" fill="#16A34A" />
+    <text x="179" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF" text-anchor="middle">L</text>
+
+    <!-- Row 2, Col 3: E (Green) -->
+    <rect x="244" y="122" width="114" height="114" rx="8" fill="#16A34A" />
+    <text x="301" y="203" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="74" font-weight="800" fill="#FFFFFF" text-anchor="middle">E</text>
+  </g>
+</svg>

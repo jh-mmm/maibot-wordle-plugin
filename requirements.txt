@@ -1,0 +1,4 @@
+# MaiBot Wordle 猜单词插件依赖清单
+# 本插件主要使用 Python 标准库，宿主环境由 MaiBot 提供 maibot_sdk。
+# 如需独立开发或类型检查，可安装对应 SDK：
+# maibot-sdk>=2.0.0
