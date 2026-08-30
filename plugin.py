@@ -84,6 +84,7 @@ except ImportError:
         ON_MESSAGE = "on_message"
 
 
+from data.words_cet import CET_TARGET_WORDS
 from data.words_target import TARGET_WORDS, WORD_DEFINITIONS
 from data.words_valid import VALID_WORDS
 from game.logic import LetterState, WordleGame
@@ -152,6 +153,11 @@ class GameSection(PluginConfigBase):
         default=15,
         description="未操作超时自动结算与清理时间 (单位：分钟)",
         json_schema_extra={"label": "对局超时时间 (分钟)"},
+    )
+    cet_only: bool = Field(
+        default=False,
+        description="是否仅抽取大学英语四六级 (CET-4/6) 词汇作为目标单词 (开启后避免生僻冷门词)",
+        json_schema_extra={"label": "仅限四六级词汇"},
     )
 
 
@@ -264,8 +270,10 @@ class WordlePlugin(MaiBotPlugin):
         self._fallback_config = WordleConfig()
         self._storage: Optional[GameStorage] = None
         self._target_words: list[str] = TARGET_WORDS
+        self._cet_words: list[str] = CET_TARGET_WORDS
         self._word_defs: dict[str, dict[str, str]] = WORD_DEFINITIONS
         self._valid_words: set[str] = VALID_WORDS
+        self._active_tasks: set[asyncio.Task[Any]] = set()
 
     @property
     def current_config(self) -> WordleConfig:
@@ -338,12 +346,18 @@ class WordlePlugin(MaiBotPlugin):
         self._storage = GameStorage(data_dir=data_dir)
         try:
             self.ctx.logger.info(
-                "Wordle 插件加载成功！已载入 %d 个目标词和 %d 个合法单词。",
+                "Wordle 插件加载成功！已载入 %d 个目标词 (%d 个四六级词) 和 %d 个合法单词。",
                 len(self._target_words),
+                len(self._cet_words),
                 len(self._valid_words),
             )
         except Exception:
-            logger.info("Wordle 插件加载成功！已载入 %d 个目标词和 %d 个合法单词。", len(self._target_words), len(self._valid_words))
+            logger.info(
+                "Wordle 插件加载成功！已载入 %d 个目标词 (%d 个四六级词) 和 %d 个合法单词。",
+                len(self._target_words),
+                len(self._cet_words),
+                len(self._valid_words),
+            )
 
     async def on_unload(self) -> None:
         """Plugin unload cleanup."""
@@ -417,9 +431,49 @@ class WordlePlugin(MaiBotPlugin):
         user_id = self._extract_message_user_id(message) or "user"
         user_name = self._extract_message_user_nickname(message) or "玩家"
 
-        # 7. 后台异步执行猜词并阻断后续 AI 闲聊
-        asyncio.create_task(self._process_guess(stream_id, user_id, user_name, raw_text.upper()))
+        # 7. 后台异步安全执行猜词并阻断后续 AI 闲聊，异常兜底保障消息不丢失
+        task = asyncio.create_task(
+            self._safe_process_guess(stream_id, user_id, user_name, raw_text.upper())
+        )
+        self._active_tasks.add(task)
+        task.add_done_callback(self._active_tasks.discard)
         return {"action": "abort"}
+
+    async def _safe_process_guess(
+        self,
+        stream_id: str,
+        user_id: str,
+        user_name: str,
+        word: str,
+    ) -> None:
+        """安全异步执行猜词逻辑，捕获异常并兜底提示，避免用户猜测静默丢失。"""
+        try:
+            await self._process_guess(stream_id, user_id, user_name, word)
+        except Exception as exc:
+            try:
+                self.ctx.logger.exception(
+                    "Wordle 处理猜词异常 (stream_id=%s, user=%s, word=%s): %s",
+                    stream_id,
+                    user_id,
+                    word,
+                    exc,
+                )
+            except Exception:
+                logger.exception(
+                    "Wordle 处理猜词异常 (stream_id=%s, user=%s, word=%s): %s",
+                    stream_id,
+                    user_id,
+                    word,
+                    exc,
+                )
+            try:
+                if self.ctx and hasattr(self.ctx, "send") and hasattr(self.ctx.send, "text"):
+                    await self.ctx.send.text(
+                        f"⚠️ 处理猜词 '{word}' 时发生异常，请重试或发送 /wordle 查看当前棋盘。",
+                        stream_id,
+                    )
+            except Exception:
+                pass
 
     # ----------------------------------------------------
     # Event: ON_MESSAGE (Fallback Interceptor)
@@ -659,8 +713,13 @@ class WordlePlugin(MaiBotPlugin):
             )
             return True, "已有进行中游戏", 2
 
-        # Pick random target word
-        target = random.choice(self._target_words).upper()
+        # Pick random target word from CET-4/6 or full dictionary according to config
+        use_cet_only = bool(getattr(g_cfg, "cet_only", False))
+        pool = self._cet_words if use_cet_only and self._cet_words else self._target_words
+        if not pool:
+            pool = self._target_words
+
+        target = random.choice(pool).upper()
         target_lower = target.lower()
         word_def = self._word_defs.get(target_lower, {})
         phonetic = word_def.get("phonetic", "")

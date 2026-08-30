@@ -24,6 +24,9 @@ allow_direct_guess = true
 # 未操作超时自动结算与清理时间（单位：分钟，默认 15 分钟）
 session_timeout_minutes = 15
 
+# 是否仅抽取大学英语四六级 (CET-4/6) 词汇作为目标单词（默认关闭，开启可避免偏门生僻词）
+cet_only = false
+
 [display]
 # 是否优先使用 HTML2PNG 图片卡片展示棋盘与战绩（默认开启，失败时自动降级为 Emoji 文本棋盘）
 use_image_render = true

@@ -4,6 +4,15 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，并且本项目遵循 [语义化版本 2.0.0](https://semver.org/lang/zh-CN/)。
 
+## [1.0.4] - 2026-08-30
+
+### 新增功能 (Added)
+- 📚 **四六级核心目标词库 (`cet_only`)**：在 `[game]` 配置段中新增 `cet_only` 选项（默认关闭），开启后目标单词仅从大学英语四六级大纲（含初高中核心词）的 1,099 个高频 5 字母词中抽取，避免冷门生僻词。
+- 🛡️ **猜词拦截异常兜底保障**：在 `chat.receive.before_process` 拦截中增加 `_safe_process_guess` 异常处理与友好用户通知机制，并维护后台 Task 引用防止意外 GC 导致猜词结果静默丢失。
+
+### 修复 (Fixed)
+- 🌐 修正 `_manifest.json` 中 `i18n.supported_locales` 声明，移除不存在翻译资源的 `en-US`，与插件实际中文提示保持一致。
+
 ## [1.0.3] - 2026-08-30
 
 ### 新增功能 (Added)
