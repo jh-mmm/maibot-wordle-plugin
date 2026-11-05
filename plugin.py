@@ -87,7 +87,7 @@ except ImportError:
 from data.words_cet import CET_TARGET_WORDS
 from data.words_target import TARGET_WORDS, WORD_DEFINITIONS
 from data.words_valid import VALID_WORDS
-from game.logic import LetterState, WordleGame
+from game.logic import LetterState, WordleGame, is_five_letter_word
 from game.storage import GameStorage, PlayerStats
 from ui.renderer import render_stats_card, render_wordle_board
 
@@ -409,9 +409,9 @@ class WordlePlugin(MaiBotPlugin):
         if not self._is_access_allowed(message):
             return None
 
-        # 5. 提取消息文本并校验是否为 5 字母纯英文单词
+        # 5. 提取消息文本并校验是否为 5 字母纯英文单词（严格限制为 ASCII 英文字母，排除中文字符与数字等）
         raw_text = self._extract_message_text(message).strip()
-        if len(raw_text) != 5 or not raw_text.isalpha():
+        if not is_five_letter_word(raw_text):
             return None
 
         # 6. 提取 stream_id 并校验当前流中是否存在进行中的有效游戏
@@ -502,7 +502,7 @@ class WordlePlugin(MaiBotPlugin):
             return {"continue_processing": True}
 
         raw_text = self._extract_message_text(message).strip()
-        if len(raw_text) != 5 or not raw_text.isalpha():
+        if not is_five_letter_word(raw_text):
             return {"continue_processing": True}
 
         target_stream_id = stream_id or self._extract_message_stream_id(message)
@@ -601,7 +601,7 @@ class WordlePlugin(MaiBotPlugin):
             return ok, msg, True
 
         # If user typed /wordle <5-letter-word> or /guess <5-letter-word>
-        if len(arg) == 5 and arg.isalpha():
+        if is_five_letter_word(arg):
             ok, msg, _ = await self._process_guess(target_stream_id, target_user_id, target_user_name, arg.upper())
             return ok, msg, True
 
@@ -668,9 +668,10 @@ class WordlePlugin(MaiBotPlugin):
             return {"success": ok, "content": msg}
 
         if action_clean == "guess":
-            if not word:
-                return {"success": False, "content": "猜词时必须提供 5 字母的 word 参数"}
-            ok, msg, _ = await self._process_guess(target_stream_id, user_id, user_name, word.upper())
+            clean_word = word.strip()
+            if not is_five_letter_word(clean_word):
+                return {"success": False, "content": "猜词时必须提供 5 个英文字母的英文单词"}
+            ok, msg, _ = await self._process_guess(target_stream_id, user_id, user_name, clean_word.upper())
             return {"success": ok, "content": msg}
 
         if action_clean == "hint":

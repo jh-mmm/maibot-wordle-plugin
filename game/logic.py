@@ -84,6 +84,14 @@ def evaluate_guess(target_word: str, guess_word: str) -> list[str]:
 WORD_LENGTH = 5
 
 
+def is_five_letter_word(word: str) -> bool:
+    """校验是否为严格的 5 个英文字母单词 (A-Z, a-z)。
+
+    排除中文字符、数字、空格及特殊标点符号。
+    """
+    return len(word) == WORD_LENGTH and word.isascii() and word.isalpha()
+
+
 class WordleGame:
     """Wordle single game session instance."""
 
@@ -147,7 +155,7 @@ class WordleGame:
         if len(clean_word) != self.word_length:
             return False, f"请输入 {self.word_length} 个字母的英文单词！当前输入了 {len(clean_word)} 个字母。", None
 
-        if not clean_word.isalpha():
+        if not (clean_word.isascii() and clean_word.isalpha()):
             return False, "单词只能包含英文字母 (A-Z)。", None
 
         lower_word = clean_word.lower()
